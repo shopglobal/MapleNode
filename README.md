@@ -2,6 +2,10 @@
 
 ###### The purpose of this repository is to provide easier access to NodeJS developers when it comes to developing applications for MapleChange.
 
+Install the npm repo:
+
+```npm install maplechange-api```
+
 The API uses two global variables in order to access personal data of the user. These can be generated through a user's profile page on the website. Here is a simple usage of MapleChange API.
 
 ```
