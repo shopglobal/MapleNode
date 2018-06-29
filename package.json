@@ -1,0 +1,31 @@
+{
+  "name": "maplechange-api",
+  "version": "1.0.0",
+  "description": "The purpose of this repository is to provide easier access to NodeJS developers when it comes to developing applications for MapleChange.",
+  "main": "maplechange.js",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maplechange/MapleNode.git"
+  },
+  "keywords": [
+    "MapleChange",
+    "API",
+    "Cryptocurrency",
+    "Exchange",
+    "API V2."
+  ],
+  "author": "MapleChange Development",
+  "license": "SEE LICENSE IN <filename>",
+  "bugs": {
+    "url": "https://github.com/maplechange/MapleNode/issues"
+  },
+  "homepage": "https://github.com/maplechange/MapleNode#readme"
+}
