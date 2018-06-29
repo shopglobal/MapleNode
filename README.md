@@ -15,7 +15,7 @@ mapleAPI.accessKey = 'YOUR_ACCESS_KEY_HERE';
 mapleAPI.secretKey = 'YOUR_SECRET_KEY_HERE';
 
 mapleAPI.getAllOrders(function(orders) {
-    console.log(orders
+    console.log(orders);
 });
 ```
 
