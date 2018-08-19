@@ -5,8 +5,8 @@
  */
 
 var request = require('request'),
-	crypto = require('crypto'),
-	MapleChange = {};
+    crypto = require('crypto'),
+    MapleChange = {};
 
 module.exports = MapleChange;
 
@@ -21,29 +21,29 @@ var API = 'https://maplechange.com/api/v2/';
  */
 
 MapleChange.getTonce = function() {
-	return new Date().getTime();
+    return new Date().getTime();
 };
 
 MapleChange.request = function(uri, callback) {
-	request.get(API + uri, function(error, response, body) {
-	    if (error)
-	        throw error;
+    request.get(API + uri, function(error, response, body) {
+        if (error)
+            throw error;
 
-		callback(body);
-	});
+        callback(body);
+    });
 };
 
 MapleChange.postRequest = function(uri, signature, callback) {
-	request.post(API + uri, {
-		form: {
-			signature: signature
-		}
-	}, function(error, response, body) {
-	    if (error)
-	        throw error;
+    request.post(API + uri, {
+        form: {
+            signature: signature
+        }
+    }, function(error, response, body) {
+        if (error)
+            throw error;
 
-		callback(body);
-	});
+        callback(body);
+    });
 };
 
 MapleChange.generateSignature = function(requestType, uri, extra, callback, withoutTonce) {
@@ -61,7 +61,7 @@ MapleChange.generateSignature = function(requestType, uri, extra, callback, with
     if (withoutTonce)
         callback(hash);
     else
-	    callback(hash, tonce);
+        callback(hash, tonce);
 };
 
 
@@ -186,6 +186,21 @@ MapleChange.getAllOrders = function(callback) {
     });
 };
 
+MapleChange.createWithdrawal = function(currency, to, amount, two_factor, callback) {
+
+    var tonce = MapleChange.getTonce(),
+        query = 'access_key=' + MapleChange.accessKey + '&amount=' + amount + '&currency=' + currency + '&to=' + to + '&tonce=' + tonce + '&two_factor=' + two_factor
+
+    MapleChange.generateSignature('POST', '/api/v2/withdraws', query, function(payloadHash) {
+        var uri = 'withdraws?' + query;
+
+        MapleChange.postRequest(uri, payloadHash, function(result) {
+            callback(result);
+        });
+    }, true);
+
+};
+
 MapleChange.createOrder = function(market, side, volume, price, callback) {
     var tonce = MapleChange.getTonce(),
         query = 'access_key=' + MapleChange.accessKey + '&market=' + market + '&price=' + price + '&side=' + side + '&tonce=' + tonce + '&volume=' + volume;
@@ -237,7 +252,7 @@ MapleChange.cancelAllOrders = function(callback) {
         MapleChange.postRequest(uri, payloadHash, function(result) {
             callback(JSON.parse(result));
         });
-    });
+    }, true);
 };
 
 MapleChange.getOrderBook = function(market, callback) {
@@ -299,17 +314,3 @@ MapleChange.getTimestamp = function(callback) {
         callback(JSON.parse(result));
     });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
