@@ -1,6 +1,6 @@
 {
   "name": "maplechange-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The purpose of this repository is to provide easier access to NodeJS developers when it comes to developing applications for MapleChange.",
   "main": "maplechange.js",
   "dependencies": {
