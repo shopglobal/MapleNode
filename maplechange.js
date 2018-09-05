@@ -69,6 +69,14 @@ MapleChange.generateSignature = function(requestType, uri, extra, callback, with
  * Primary API Functions
  */
 
+MapleChange.getCoins = function(callback) {
+    var uri = 'coins';
+
+    MapleChange.request(uri, function(result) {
+        callback(JSON.parse(result));
+    });
+};
+
 MapleChange.getMarket = function(ticker, callback) {
     var uri = 'tickers/' + ticker;
 
@@ -97,6 +105,14 @@ MapleChange.getTickers = function(callback) {
     });
 };
 
+MapleChange.getVolume = function(callback) {
+    var uri = 'volume';
+
+    MapleChange.request(uri, function(result) {
+        callback(JSON.parse(result));
+    });
+};
+
 MapleChange.getAccount = function(callback) {
     MapleChange.generateSignature('GET', '/api/v2/members/me', '', function(payloadHash, tonce) {
         var uri = 'members/me?access_key=' + MapleChange.accessKey + '&tonce=' + tonce + '&signature=' + payloadHash;
@@ -105,6 +121,50 @@ MapleChange.getAccount = function(callback) {
             callback(JSON.parse(result));
         });
     });
+};
+
+MapleChange.getAccountWallets = function(callback) {
+    MapleChange.generateSignature('GET', '/api/v2/members/me/wallet', '', function(payloadHash, tonce) {
+        var uri = 'members/me/wallet?access_key=' + MapleChange.accessKey + '&tonce=' + tonce + '&signature=' + payloadHash;
+
+        MapleChange.request(uri, function(result) {
+            callback(JSON.parse(result));
+        });
+    });
+};
+
+MapleChange.getAccountHistory = function(limit, callback) {
+    MapleChange.generateSignature('GET', '/api/v2/members/history', '&limit=' + limit, function(payloadHash, tonce) {
+        var uri = 'members/history?access_key=' + MapleChange.accessKey + '&limit=' + limit + '&tonce=' + tonce + '&signature=' + payloadHash;
+
+        MapleChange.request(uri, function(result) {
+            callback(JSON.parse(result));
+        });
+    });
+};
+
+MapleChange.generateOTP = function(callback) {
+    MapleChange.generateSignature('GET', '/api/v2/members/otp', '', function(payloadHash, tonce) {
+        var uri = 'members/otp?access_key=' + MapleChange.accessKey + '&tonce=' + tonce + '&signature=' + payloadHash;
+
+        MapleChange.request(uri, function(result) {
+            callback(JSON.parse(result));
+        });
+    });
+};
+
+MapleChange.verifyOTP = function(code, callback) {
+    var tonce = MapleChange.getTonce(),
+        query = 'access_key=' + MapleChange.accessKey + '&code=' + code + '&tonce=' + tonce;
+
+    MapleChange.generateSignature('POST', '/api/v2/members/otp/verify', query, function(payloadHash) {
+        var uri = 'members/otp/verify?' + query;
+
+        MapleChange.postRequest(uri, payloadHash, function(result) {
+            callback(result);
+        });
+    }, true);
+
 };
 
 MapleChange.getDeposit = function(transactionId, callback) {
@@ -127,6 +187,17 @@ MapleChange.getCurrencyDeposits = function(currency, callback) {
         var uri = 'deposits?access_key=' + MapleChange.accessKey + '&currency=' + currency + '&tonce=' + tonce + '&signature=' + payloadHash;
 
         MapleChange.request(uri, function(result) {
+            callback(JSON.parse(result));
+        });
+    });
+};
+
+MapleChange.getCurrencyWithdraws = function(currency, callback) {
+    MapleChange.generateSignature('GET', '/api/v2/withdraws', '&currency=' + currency, function(payloadHash, tonce) {
+        var uri = 'withdraws?access_key=' + MapleChange.accessKey + '&currency=' + currency + '&tonce=' + tonce + '&signature=' + payloadHash;
+
+        MapleChange.request(uri, function(result) {
+            console.log(result);
             callback(JSON.parse(result));
         });
     });
@@ -195,7 +266,7 @@ MapleChange.createWithdrawal = function(currency, to, amount, two_factor, callba
         var uri = 'withdraws?' + query;
 
         MapleChange.postRequest(uri, payloadHash, function(result) {
-            callback(result);
+            callback(JSON.parse(result));
         });
     }, true);
 
@@ -297,9 +368,15 @@ MapleChange.getMyMarketTrades = function(market, callback) {
     });
 };
 
-MapleChange.getKData = function(market, callback) {
+/**
+ * API call to receive all graph data of a market.
+ * Limit specifies the amount of data points.
+ * Period specifies the timespan in minutes (1, 3, 5, 10, 15, 30, 60, etc.)
+ */
+
+MapleChange.getKData = function(market, limit, period, callback) {
     MapleChange.generateSignature('GET', '/api/v2/k', '&market=' + market, function(payloadHash, tonce) {
-        var uri = 'k?access_key=' + MapleChange.accessKey + '&market=' + market + '&tonce=' + tonce + '&signature=' + payloadHash;
+        var uri = 'k?limit=' + limit + '&market=' + market + '&period=' + period + '&tonce=' + tonce;
 
         MapleChange.request(uri, function(result) {
             callback(JSON.parse(result));
